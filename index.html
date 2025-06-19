@@ -48,6 +48,11 @@
       position: relative;
       border-bottom: 2px solid white;
       color: #888;
+      cursor: default;
+    }
+
+    .menu-item#chapter1 {
+      cursor: pointer; /* Indicamos que Chapter 1 es clickeable */
     }
 
     .menu-item.selected {
@@ -62,6 +67,7 @@
 
     .menu-item.locked {
       color: #555;
+      cursor: not-allowed;
     }
 
     .menu-item.locked .chapter-name,
@@ -120,6 +126,7 @@
       opacity: 0;
       transform: translateY(20px);
       animation: appear 0.3s ease-out forwards;
+      animation-delay: 0.8s;
     }
 
     .bottom-bar .spade-icons {
@@ -161,10 +168,6 @@
     .menu-item:nth-child(6) { animation-delay: 0.6s; }
     .menu-item:nth-child(7) { animation-delay: 0.7s; }
 
-    .bottom-bar {
-      animation-delay: 0.8s;
-    }
-
     /* Animación de salida */
     .menu-item.hidden {
       animation: disappear 0.3s ease-out forwards;
@@ -199,7 +202,7 @@
   <div class="menu" id="menu">
     <div class="menu-content">
       <!-- CAPÍTULOS DEL MENÚ -->
-      <div class="menu-item selected">
+      <div class="menu-item selected" id="chapter1">
         <span><img src="heart.png" alt="heart" class="heart"></span>
         <span class="chapter-name">Chapter 1</span>
         <span class="chapter-desc">The Beginning</span>
@@ -295,14 +298,32 @@
       } else if (e.key.toLowerCase() === 'z') {
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
-          // Ocultar el bottom-bar primero
-          bottomBar.classList.add('hidden');
+          // Si es Chapter 1, redirigir después de 3 segundos
+          if (selected.id === 'chapter1') {
+            selected.classList.add('hidden'); // Ocultar Chapter 1 primero
+            bottomBar.classList.add('hidden');
 
-          // Luego ocultar los elementos del menú en orden inverso
-          for (let i = items.length - 1; i >= 0; i--) {
+            // Luego ocultar los demás elementos en orden inverso
+            for (let i = items.length - 1; i >= 0; i--) {
+              if (i !== currentIndex) {
+                setTimeout(() => {
+                  items[i].classList.add('hidden');
+                }, (items.length - i) * 60); // Ajusta este número para cambiar velocidad
+              }
+            }
+
+            // Redirigir después de 3 segundos
             setTimeout(() => {
-              items[i].classList.add('hidden');
-            }, (items.length - i) * 60); // Ajusta este número para velocidad
+              window.location.href = 'https://youtube.com'; 
+            }, 3000); // 3 segundos de espera
+          } else {
+            // Para otros capítulos (si decides usarlos después)
+            bottomBar.classList.add('hidden');
+            for (let i = items.length - 1; i >= 0; i--) {
+              setTimeout(() => {
+                items[i].classList.add('hidden');
+              }, (items.length - i) * 60);
+            }
           }
         }
       } else if (e.key.toLowerCase() === 'x') {
