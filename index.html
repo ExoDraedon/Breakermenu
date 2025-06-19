@@ -52,7 +52,13 @@
     }
 
     .menu-item#chapter1 {
-      cursor: pointer; /* Indicamos que Chapter 1 es clickeable */
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .menu-item#chapter1:hover,
+    .menu-item#chapter1:active {
+      background-color: rgba(255, 255, 0, 0.1);
     }
 
     .menu-item.selected {
@@ -202,7 +208,7 @@
   <div class="menu" id="menu">
     <div class="menu-content">
       <!-- CAPÍTULOS DEL MENÚ -->
-      <div class="menu-item selected" id="chapter1">
+      <div class="menu-item selected" id="chapter1" onclick="handleChapter1Click()">
         <span><img src="heart.png" alt="heart" class="heart"></span>
         <span class="chapter-name">Chapter 1</span>
         <span class="chapter-desc">The Beginning</span>
@@ -272,6 +278,38 @@
       heartContainer.innerHTML = '<img src="heart.png" class="heart">';
     }
 
+    function handleChapter1Click() {
+      const chapter1 = document.getElementById('chapter1');
+      if (!chapter1.classList.contains('selected')) {
+        // Si no está seleccionado, seleccionarlo visualmente
+        items.forEach(item => item.classList.remove('selected'));
+        chapter1.classList.add('selected');
+        chapter1.querySelector('span').innerHTML = '<img src="heart.png" class="heart">';
+        currentIndex = 0; // Chapter 1 es el índice 0
+      }
+
+      triggerExitAnimationAndRedirect();
+    }
+
+    function triggerExitAnimationAndRedirect() {
+      const chapter1 = document.getElementById('chapter1');
+
+      chapter1.classList.add('hidden');
+      bottomBar.classList.add('hidden');
+
+      for (let i = items.length - 1; i >= 0; i--) {
+        if (items[i].id !== 'chapter1') {
+          setTimeout(() => {
+            items[i].classList.add('hidden');
+          }, (items.length - i) * 60); // Ajusta velocidad aquí
+        }
+      }
+
+      setTimeout(() => {
+        window.location.href = 'https://youtube.com'; 
+      }, 3000); // 3 segundos
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') {
         let nextIndex = currentIndex;
@@ -298,26 +336,9 @@
       } else if (e.key.toLowerCase() === 'z') {
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
-          // Si es Chapter 1, redirigir después de 3 segundos
           if (selected.id === 'chapter1') {
-            selected.classList.add('hidden'); // Ocultar Chapter 1 primero
-            bottomBar.classList.add('hidden');
-
-            // Luego ocultar los demás elementos en orden inverso
-            for (let i = items.length - 1; i >= 0; i--) {
-              if (i !== currentIndex) {
-                setTimeout(() => {
-                  items[i].classList.add('hidden');
-                }, (items.length - i) * 60); // Ajusta este número para cambiar velocidad
-              }
-            }
-
-            // Redirigir después de 3 segundos
-            setTimeout(() => {
-              window.location.href = 'https://youtube.com'; 
-            }, 3000); // 3 segundos de espera
+            triggerExitAnimationAndRedirect();
           } else {
-            // Para otros capítulos (si decides usarlos después)
             bottomBar.classList.add('hidden');
             for (let i = items.length - 1; i >= 0; i--) {
               setTimeout(() => {
