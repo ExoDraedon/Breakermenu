@@ -4,44 +4,196 @@
   <meta charset="UTF-8">
   <title>DELTARUNE Menu Recreation</title>
   <style>
-    /* ... (estilos existentes) ... */
+    @font-face {
+      font-family: 'Determination';
+      src: url('determination.ttf') format('truetype');
+    }
 
-    .play-do-not {
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'Determination', 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
       display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .menu {
+      width: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
       width: 100%;
-    }
-
-    .play-do-not span {
+      padding: 12px 0;
       font-size: 24px;
+      transition: color 0.2s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: appear 0.3s ease-out forwards;
+      position: relative;
+      border-bottom: 2px solid white;
+      color: #888;
+    }
+
+    .menu-item.selected {
       color: yellow;
-      cursor: pointer;
     }
 
-    .play-do-not span.selected {
-      color: red; /* Resaltar la opción seleccionada */
+    .menu-item.selected .chapter-name,
+    .menu-item.selected .chapter-desc {
+      color: yellow;
+      font-weight: bold;
     }
 
-    .icon-container {
-      display: flex;
-      align-items: center;
+    .menu-item.locked {
+      color: #555;
+    }
+
+    .menu-item.locked .chapter-name,
+    .menu-item.locked .chapter-desc {
+      color: #555;
+    }
+
+    .heart {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: pulse 0.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: translateY(-50%) scale(1);
+      }
+      50% {
+        transform: translateY(-50%) scale(1.2);
+      }
+    }
+
+    .chapter-name {
+      flex: 1;
+      text-align: left;
+      margin-left: 50px;
+    }
+
+    .chapter-desc {
+      flex: 1;
+      text-align: left;
     }
 
     .icon {
       width: 32px;
       height: 32px;
-      margin-left: 20px;
+      margin-right: 20px;
       background-color: white;
     }
 
-    .icon.locked {
-      opacity: 0.5; /* Opacidad para capítulos bloqueados */
+    .selected .icon {
+      background-color: yellow;
     }
 
-    .icon img {
+    .bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .bottom-bar .spade-icons {
+      letter-spacing: 10px;
+    }
+
+    .bottom-bar span {
+      margin-left: 10px;
+    }
+
+    @keyframes appear {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-item:nth-child(1) { animation-delay: 0.1s; }
+    .menu-item:nth-child(2) { animation-delay: 0.2s; }
+    .menu-item:nth-child(3) { animation-delay: 0.3s; }
+    .menu-item:nth-child(4) { animation-delay: 0.4s; }
+    .menu-item:nth-child(5) { animation-delay: 0.5s; }
+    .menu-item:nth-child(6) { animation-delay: 0.6s; }
+    .menu-item:nth-child(7) { animation-delay: 0.7s; }
+
+    .bottom-bar hr {
+      width: 100%;
+      border-color: gray;
+      margin: 10px 0;
+    }
+
+    /* Popup Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: black;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .modal button {
+      background-color: yellow;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .modal button:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* Animación de cerrar como libro */
+    @keyframes closeBook {
+      0% { transform: scaleX(1); }
+      50% { transform: scaleX(0); }
+      100% { transform: scaleX(1); }
+    }
+
+    .book-close {
+      animation: closeBook 1s forwards;
     }
   </style>
 </head>
@@ -56,99 +208,43 @@
       <span><img src="heart.png" alt="heart" class="heart"></span>
       <span class="chapter-name">Chapter 1</span>
       <span class="chapter-desc">The Beginning</span>
-      <div class="play-do-not">
-        <span class="play selected">Play</span>
-        <span class="do-not">Do Not</span>
-      </div>
-      <div class="icon-container">
-        <div class="icon">
-          <img src="spade.png" alt="Spade">
-        </div>
-      </div>
+      <div class="icon"></div>
     </div>
     <div class="menu-item locked">
       <span></span>
       <span class="chapter-name">Chapter 2</span>
       <span class="chapter-desc">A Cyber's World</span>
-      <div class="play-do-not">
-        <span class="play">Play</span>
-        <span class="do-not">Do Not</span>
-      </div>
-      <div class="icon-container">
-        <div class="icon locked">
-          <img src="cyber-spade.png" alt="Cyber Spade">
-        </div>
-      </div>
+      <div class="icon"></div>
     </div>
     <div class="menu-item locked">
       <span></span>
       <span class="chapter-name">Chapter 3</span>
       <span class="chapter-desc">Late Night</span>
-      <div class="play-do-not">
-        <span class="play">Play</span>
-        <span class="do-not">Do Not</span>
-      </div>
-      <div class="icon-container">
-        <div class="icon locked">
-          <img src="moon-spade.png" alt="Moon Spade">
-        </div>
-      </div>
+      <div class="icon"></div>
     </div>
     <div class="menu-item locked">
       <span></span>
       <span class="chapter-name">Chapter 4</span>
       <span class="chapter-desc">Prophecy</span>
-      <div class="play-do-not">
-        <span class="play">Play</span>
-        <span class="do-not">Do Not</span>
-      </div>
-      <div class="icon-container">
-        <div class="icon locked">
-          <img src="prophecy-spade.png" alt="Prophecy Spade">
-        </div>
-      </div>
+      <div class="icon"></div>
     </div>
     <div class="menu-item locked">
       <span></span>
       <span class="chapter-name">Chapter 5</span>
       <span class="chapter-desc">--</span>
-      <div class="play-do-not">
-        <span class="play">Play</span>
-        <span class="do-not">Do Not</span>
-      </div>
-      <div class="icon-container">
-        <div class="icon locked">
-          <img src="empty-spade.png" alt="Empty Spade">
-        </div>
-      </div>
+      <div class="icon"></div>
     </div>
     <div class="menu-item locked">
       <span></span>
       <span class="chapter-name">Chapter 6</span>
       <span class="chapter-desc">--</span>
-      <div class="play-do-not">
-        <span class="play">Play</span>
-        <span class="do-not">Do Not</span>
-      </div>
-      <div class="icon-container">
-        <div class="icon locked">
-          <img src="empty-spade.png" alt="Empty Spade">
-        </div>
-      </div>
+      <div class="icon"></div>
     </div>
     <div class="menu-item locked">
       <span></span>
       <span class="chapter-name">Chapter 7</span>
       <span class="chapter-desc">--</span>
-      <div class="play-do-not">
-        <span class="play">Play</span>
-        <span class="do-not">Do Not</span>
-      </div>
-      <div class="icon-container">
-        <div class="icon locked">
-          <img src="empty-spade.png" alt="Empty Spade">
-        </div>
-      </div>
+      <div class="icon"></div>
     </div>
 
     <div class="bottom-bar">
@@ -227,29 +323,12 @@
       const selected = items[currentIndex];
       selected.classList.add('book-close'); // Animación de cierre tipo libro
       setTimeout(() => {
-        window.location.href = 'chapter1.html'; // Redirigir al capítulo seleccionado
+        window.location.href = 'chapter1.html';
       }, 1000); // Esperar la animación
     });
 
     document.getElementById('confirmNo').addEventListener('click', () => {
       document.getElementById('confirmationModal').style.display = 'none';
-    });
-
-    // Manejar clics en "Play" y "Do Not"
-    document.querySelectorAll('.play-do-not span').forEach(span => {
-      span.addEventListener('click', () => {
-        const playDoNotContainer = span.closest('.play-do-not');
-        const playSpan = playDoNotContainer.querySelector('.play');
-        const doNotSpan = playDoNotContainer.querySelector('.do-not');
-
-        if (span.classList.contains('play')) {
-          playSpan.classList.add('selected');
-          doNotSpan.classList.remove('selected');
-        } else {
-          doNotSpan.classList.add('selected');
-          playSpan.classList.remove('selected');
-        }
-      });
     });
   </script>
 </body>
