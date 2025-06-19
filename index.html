@@ -147,6 +147,54 @@
       border-color: gray;
       margin: 10px 0;
     }
+
+    /* Popup Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: black;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .modal button {
+      background-color: yellow;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .modal button:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* Animación de cerrar como libro */
+    @keyframes closeBook {
+      0% { transform: scaleX(1); }
+      50% { transform: scaleX(0); }
+      100% { transform: scaleX(1); }
+    }
+
+    .book-close {
+      animation: closeBook 1s forwards;
+    }
   </style>
 </head>
 <body>
@@ -161,42 +209,8 @@
       <span class="chapter-desc">The Beginning</span>
       <div class="icon"></div>
     </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 2</span>
-      <span class="chapter-desc">A Cyber's World</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 3</span>
-      <span class="chapter-desc">Late Night</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 4</span>
-      <span class="chapter-desc">Prophecy</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 5</span>
-      <span class="chapter-desc">--</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 6</span>
-      <span class="chapter-desc">--</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 7</span>
-      <span class="chapter-desc">--</span>
-      <div class="icon"></div>
-    </div>
+    <!-- Chapter 2, 3, etc. ...-->
+    <!-- Remaining chapters here -->
 
     <div class="bottom-bar">
       <span>(C) Toby Fox 2018–2025<br>DELTARUNE v14</span>
@@ -205,6 +219,15 @@
       <span class="spade-icons">♠ ♠ ♠</span>
     </div>
     <hr>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div class="modal" id="confirmationModal">
+    <div class="modal-content">
+      <h3>¿Estás seguro de que quieres ir al capítulo?</h3>
+      <button id="confirmYes">Sí</button>
+      <button id="confirmNo">No</button>
+    </div>
   </div>
 
   <script>
@@ -224,41 +247,53 @@
     }
 
     document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowDown') {
-    let nextIndex = currentIndex;
-    do {
-      nextIndex = (nextIndex + 1) % items.length;
-    } while (items[nextIndex].classList.contains('locked') && nextIndex !== currentIndex);
+      if (e.key === 'ArrowDown') {
+        let nextIndex = currentIndex;
+        do {
+          nextIndex = (nextIndex + 1) % items.length;
+        } while (items[nextIndex].classList.contains('locked') && nextIndex !== currentIndex);
 
-    if (!items[nextIndex].classList.contains('locked')) {
-      currentIndex = nextIndex;
-      updateSelection();
-      new Audio('select.mp3').play();
-    }
-  } else if (e.key === 'ArrowUp') {
-    let prevIndex = currentIndex;
-    do {
-      prevIndex = (prevIndex - 1 + items.length) % items.length;
-    } while (items[prevIndex].classList.contains('locked') && prevIndex !== currentIndex);
+        if (!items[nextIndex].classList.contains('locked')) {
+          currentIndex = nextIndex;
+          updateSelection();
+          new Audio('select.mp3').play();
+        }
+      } else if (e.key === 'ArrowUp') {
+        let prevIndex = currentIndex;
+        do {
+          prevIndex = (prevIndex - 1 + items.length) % items.length;
+        } while (items[prevIndex].classList.contains('locked') && prevIndex !== currentIndex);
 
-    if (!items[prevIndex].classList.contains('locked')) {
-      currentIndex = prevIndex;
-      updateSelection();
-      new Audio('select.mp3').play();
-    }
-  } else if (e.key.toLowerCase() === 'z') {
-    const selected = items[currentIndex];
-    if (!selected.classList.contains('locked')) {
-      window.location.href = 'chapter1.html'; // Redirigir a página
-    }
-  } else if (e.key.toLowerCase() === 'x') {
-    alert('Volviendo al menú anterior');
-  }
-});
-
+        if (!items[prevIndex].classList.contains('locked')) {
+          currentIndex = prevIndex;
+          updateSelection();
+          new Audio('select.mp3').play();
+        }
+      } else if (e.key.toLowerCase() === 'z') {
+        const selected = items[currentIndex];
+        if (!selected.classList.contains('locked')) {
+          document.getElementById('confirmationModal').style.display = 'flex';
+        }
+      } else if (e.key.toLowerCase() === 'x') {
+        alert('Volviendo al menú anterior');
+      }
+    });
 
     document.getElementById('quit').addEventListener('click', () => {
-      alert("Quit no es clickeable");
+      alert("No puedes, lol");
+    });
+
+    document.getElementById('confirmYes').addEventListener('click', () => {
+      document.getElementById('confirmationModal').style.display = 'none';
+      const selected = items[currentIndex];
+      selected.classList.add('book-close'); // Animación de cierre tipo libro
+      setTimeout(() => {
+        window.location.href = 'chapter1.html';
+      }, 1000); // Esperar la animación
+    });
+
+    document.getElementById('confirmNo').addEventListener('click', () => {
+      document.getElementById('confirmationModal').style.display = 'none';
     });
   </script>
 </body>
