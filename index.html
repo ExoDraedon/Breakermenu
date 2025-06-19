@@ -5,14 +5,14 @@
   <title>DELTARUNE Menu Recreation</title>
   <style>
     @font-face {
-      font-family: 'Deltarune';
-      src: url('deltarune.ttf') format('truetype');
+      font-family: 'Determination';
+      src: url('determination.ttf') format('truetype');
     }
 
     body {
       background-color: black;
       color: white;
-      font-family: 'Deltarune', monospace;
+      font-family: 'Determination', monospace;
       margin: 0;
       padding: 40px;
       overflow: hidden;
@@ -31,6 +31,9 @@
       padding: 20px 0;
       font-size: 20px;
       transition: color 0.2s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: appear 0.5s ease-out forwards;
     }
 
     .menu-item.selected {
@@ -69,6 +72,45 @@
 
     .bottom-bar .spade-icons {
       letter-spacing: 10px;
+    }
+
+    @keyframes appear {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-item:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .menu-item:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .menu-item:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .menu-item:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    .menu-item:nth-child(5) {
+      animation-delay: 0.5s;
+    }
+
+    .menu-item:nth-child(6) {
+      animation-delay: 0.6s;
+    }
+
+    .menu-item:nth-child(7) {
+      animation-delay: 0.7s;
     }
   </style>
 </head>
