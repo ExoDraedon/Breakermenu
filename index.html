@@ -6,7 +6,7 @@
   <style>
     @font-face {
       font-family: 'Determination';
-      src: url('determination.ttf') format('truetype');
+      src: url('deltarune.ttf') format('truetype');
     }
     body {
       background-color: black;
@@ -87,6 +87,12 @@
     .chapter-desc {
       flex: 1;
       text-align: left;
+      color: white; /* Color base blanco */
+      transition: color 0.3s ease;
+    }
+
+    .selected .chapter-desc {
+      color: yellow; /* Amarillo al seleccionar */
     }
 
     .icon {
@@ -177,13 +183,13 @@
   <div class="menu" id="menu">
     <div class="menu-content">
       <!-- CAPÍTULOS DEL MENÚ -->
-      <div class="menu-item selected" id="chapter1">
-        <span></span> <!-- Aquí irá el corazón dinámicamente -->
+      <div class="menu-item selected" id="chapter1" onclick="handleChapterClick(1)">
+        <span></span>
         <span class="chapter-name">Chapter 1</span>
         <span class="chapter-desc">Blazium</span>
         <div class="icon"></div>
       </div>
-      <div class="menu-item" id="chapter2">
+      <div class="menu-item" id="chapter2" onclick="handleChapterClick(2)">
         <span></span>
         <span class="chapter-name">Chapter 2</span>
         <span class="chapter-desc">Neo Blazium</span>
@@ -235,7 +241,7 @@
     const bottomBar = document.getElementById('bottom-bar');
     let currentIndex = 0;
 
-    // Solo hay un corazón, fuera del DOM inicialmente
+    // Solo hay un corazón que se mueve dinámicamente
     const heart = document.createElement('img');
     heart.src = 'heart.png';
     heart.alt = 'heart';
@@ -244,28 +250,29 @@
     heart.style.left = '-30px';
     heart.style.top = '50%';
     heart.style.transform = 'translateY(-50%)';
-    heart.style.animation = 'pulse 0.8s infinite';
     heart.style.width = '20px';
     heart.style.height = '20px';
+    heart.style.animation = 'pulse 0.8s infinite';
     heart.style.pointerEvents = 'none';
 
     function updateSelection() {
       items.forEach((item, index) => {
         item.classList.remove('selected');
-        item.querySelector('span').innerHTML = ''; // Limpiar contenido para evitar duplicados
+        const firstSpan = item.querySelector('span');
+        if (firstSpan) {
+          firstSpan.innerHTML = '';
+        }
       });
 
       const currentItem = items[currentIndex];
       currentItem.classList.add('selected');
 
-      // Añadir el corazón al primer <span> del elemento seleccionado
-      const heartSpan = currentItem.querySelector('span');
-      if (heartSpan) {
-        heartSpan.appendChild(heart);
+      const heartContainer = currentItem.querySelector('span');
+      if (heartContainer) {
+        heartContainer.appendChild(heart);
       }
     }
 
-    // Manejador para hacer clic en capítulo
     function handleChapterClick(chapterNumber) {
       currentIndex = chapterNumber - 1;
       updateSelection();
@@ -285,10 +292,10 @@
       backgroundAudio.pause();
 
       // Reproducir audio correspondiente
-      if (chapterNumber === 1) {
+      if (chapterNumber === 1 && chapter1Audio) {
         chapter1Audio.currentTime = 0;
         chapter1Audio.play();
-      } else if (chapterNumber === 2) {
+      } else if (chapterNumber === 2 && chapter2Audio) {
         chapter2Audio.currentTime = 0;
         chapter2Audio.play();
       }
@@ -298,12 +305,11 @@
         if (chapterNumber === 1) {
           window.location.href = 'https://exodraedon.github.io/Blazium/'; 
         } else if (chapterNumber === 2) {
-          window.location.href = 'https://potosarabes.com';  // Cambia esto si tienes una URL real
+          window.location.href = 'https://potosarabes.com';  // Cambia esta URL si tienes una real
         }
       }, 11000); // 8s audio + 3s espera
     }
 
-    // Eventos del teclado
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') {
         let nextIndex = (currentIndex + 1) % items.length;
@@ -330,7 +336,7 @@
         if (!selected.classList.contains('locked')) {
           if (selected.id.startsWith('chapter')) {
             const chapterNumber = parseInt(selected.id.replace('chapter', ''));
-            handleChapterClick(chapterNumber);
+            triggerExitAnimationAndRedirect(chapterNumber);
           } else {
             bottomBar.classList.add('hidden');
             for (let i = items.length - 1; i >= 0; i--) {
@@ -340,8 +346,6 @@
             }
           }
         }
-      } else if (e.key.toLowerCase() === 'x') {
-        alert('Volviendo al menú anterior');
       }
     });
 
