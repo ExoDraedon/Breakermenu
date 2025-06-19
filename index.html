@@ -1,319 +1,264 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>DELTARUNE Menu Recreation</title>
+  <meta charset="UTF-8" />
+  <title>DELTARUNE Menú</title>
   <style>
     @font-face {
       font-family: 'Determination';
-      src: url('determination.ttf') format('truetype');
+      src: url('determination.ttf');
     }
 
     body {
-      background-color: black;
-      color: white;
-      font-family: 'Determination', 'Courier New', monospace;
       margin: 0;
       padding: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background-color: black;
+      color: white;
+      font-family: 'Determination', monospace;
       overflow: hidden;
     }
 
-    .menu {
-      width: 700px;
+    .menu-container {
+      width: 900px;
+      margin: 40px auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
+      animation: fadeIn 1s ease-out forwards;
     }
 
     .menu-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       width: 100%;
-      padding: 12px 0;
-      font-size: 24px;
-      transition: color 0.2s;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: appear 0.3s ease-out forwards;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      font-size: 28px;
+      border-bottom: 2px solid #888;
       position: relative;
-      border-bottom: 2px solid white;
-      color: #888;
-    }
-
-    .menu-item.selected {
-      color: yellow;
-    }
-
-    .menu-item.selected .chapter-name,
-    .menu-item.selected .chapter-desc {
-      color: yellow;
-      font-weight: bold;
     }
 
     .menu-item.locked {
       color: #555;
-      pointer-events: none;
     }
 
-    .menu-item.locked .chapter-name,
-    .menu-item.locked .chapter-desc {
-      color: #555;
-    }
-
-    .heart {
-      width: 20px;
-      height: 20px;
+    .menu-item.selected .heart {
       position: absolute;
-      left: -30px;
+      left: -40px;
       top: 50%;
       transform: translateY(-50%);
-      animation: pulse 0.8s infinite;
+      width: 20px;
+      height: 20px;
     }
 
-    @keyframes pulse {
-      0%, 100% {
-        transform: translateY(-50%) scale(1);
-      }
-      50% {
-        transform: translateY(-50%) scale(1.2);
-      }
+    .menu-item .chapter-left {
+      display: flex;
+      align-items: center;
     }
 
-    .chapter-name {
-      flex: 1;
-      text-align: left;
-      margin-left: 50px;
-    }
-
-    .chapter-desc {
-      flex: 1;
-      text-align: left;
+    .menu-item .chapter-name {
+      margin-right: 40px;
     }
 
     .icon {
       width: 32px;
       height: 32px;
-      margin-right: 20px;
       background-color: white;
+      border: 2px solid black;
     }
 
-    .selected .icon {
+    .icon.yellow {
       background-color: yellow;
     }
 
-    .bottom-bar {
+    .copyright {
+      margin-top: 40px;
+      font-size: 18px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-top: 20px;
-      font-size: 16px;
       width: 100%;
     }
 
-    .bottom-bar .spade-icons {
-      letter-spacing: 10px;
+    .quit.selected .heart {
+      position: absolute;
+      left: -40px;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
-    .bottom-bar span {
-      margin-left: 10px;
-    }
-
-    @keyframes appear {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .menu-item:nth-child(1) { animation-delay: 0.1s; }
-    .menu-item:nth-child(2) { animation-delay: 0.2s; }
-    .menu-item:nth-child(3) { animation-delay: 0.3s; }
-    .menu-item:nth-child(4) { animation-delay: 0.4s; }
-    .menu-item:nth-child(5) { animation-delay: 0.5s; }
-    .menu-item:nth-child(6) { animation-delay: 0.6s; }
-    .menu-item:nth-child(7) { animation-delay: 0.7s; }
-    .menu-item:nth-child(8) { animation-delay: 0.8s; }
-
-    .bottom-bar hr {
-      width: 100%;
-      border-color: gray;
-      margin: 10px 0;
-    }
-
-    /* Modal de confirmación */
-    .modal {
-      display: none;
+    .confirmation {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: black;
+      border: 2px solid white;
+      padding: 40px;
+      text-align: center;
+      display: none;
+      z-index: 999;
     }
 
-    .modal-content {
-      background-color: black;
-      padding: 20px;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .confirmation p {
+      font-size: 22px;
+      margin-bottom: 20px;
     }
 
-    .modal button {
-      background-color: yellow;
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      margin: 10px;
+    .confirmation button {
+      margin: 5px;
+      padding: 10px 30px;
+      font-family: 'Determination';
+      font-size: 20px;
       cursor: pointer;
-      font-size: 16px;
+      border: none;
+      background-color: yellow;
     }
 
-    .modal button:hover {
-      background-color: white;
+    @keyframes fadeOutBook {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scaleX(0); opacity: 0; }
     }
 
-    @keyframes closeBook {
-      0% { transform: scaleX(1); }
-      50% { transform: scaleX(0); }
-      100% { transform: scaleX(1); }
-    }
-
-    .book-close {
-      animation: closeBook 1s forwards;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-<audio autoplay loop>
-  <source src="menu.mp3" type="audio/mpeg">
-</audio>
+  <audio autoplay loop>
+    <source src="menu.mp3" type="audio/mpeg">
+  </audio>
 
-<div class="menu" id="menu">
-  <div class="menu-item" data-unlocked="true">
-    <span></span>
-    <span class="chapter-name">Chapter 1</span>
-    <span class="chapter-desc">The Beginning</span>
-    <div class="icon"></div>
+  <div class="menu-container" id="menu">
+    <div class="menu-item selected" data-unlocked="true">
+      <div class="chapter-left">
+        <img src="heart.png" class="heart" />
+        <span class="chapter-name">Chapter 1</span>
+        <span>* ❤️ Play</span>
+      </div>
+      <span>Do Not</span>
+      <div class="icon yellow"></div>
+    </div>
+    <div class="menu-item" data-unlocked="true">
+      <div class="chapter-left">
+        <span class="chapter-name">Chapter 2</span>
+        <span>*</span>
+      </div>
+      <span>A Cyber's World</span>
+      <div class="icon"></div>
+    </div>
+    <div class="menu-item" data-unlocked="true">
+      <div class="chapter-left">
+        <span class="chapter-name">Chapter 3</span>
+        <span>*</span>
+      </div>
+      <span>Late Night</span>
+      <div class="icon"></div>
+    </div>
+    <div class="menu-item" data-unlocked="true">
+      <div class="chapter-left">
+        <span class="chapter-name">Chapter 4</span>
+        <span>*</span>
+      </div>
+      <span>Prophecy</span>
+      <div class="icon"></div>
+    </div>
+    <div class="menu-item locked" data-unlocked="false">
+      <div class="chapter-left">
+        <span class="chapter-name">Chapter 5</span>
+      </div>
+      <span>--</span>
+      <div class="icon"></div>
+    </div>
+
+    <div class="copyright menu-item quit" data-unlocked="true">
+      <div style="display: flex; flex-direction: column;">
+        <span>(C) Toby Fox 2018–2025</span>
+        <span>DELTARUNE v14</span>
+      </div>
+      <span>Quit</span>
+      <div class="icon yellow"></div>
+    </div>
   </div>
-  <div class="menu-item locked" data-unlocked="false">
-    <span></span>
-    <span class="chapter-name">Chapter 2</span>
-    <span class="chapter-desc">A Cyber's World</span>
-    <div class="icon"></div>
-  </div>
-  <div class="menu-item locked" data-unlocked="false">
-    <span></span>
-    <span class="chapter-name">Chapter 3</span>
-    <span class="chapter-desc">Late Night</span>
-    <div class="icon"></div>
-  </div>
-  <div class="menu-item locked" data-unlocked="false">
-    <span></span>
-    <span class="chapter-name">Chapter 4</span>
-    <span class="chapter-desc">Prophecy</span>
-    <div class="icon"></div>
-  </div>
-  <div class="menu-item locked" data-unlocked="false">
-    <span></span>
-    <span class="chapter-name">Chapter 5</span>
-    <span class="chapter-desc">--</span>
-    <div class="icon"></div>
-  </div>
-  <div class="menu-item" id="quit-option" data-unlocked="true">
-    <span></span>
-    <span class="chapter-name">(C) Toby Fox 2018–2025<br>DELTARUNE v14</span>
-    <span class="chapter-desc">Quit</span>
-    <div class="icon">♠</div>
+
+  <div class="confirmation" id="confirmBox">
+    <p>¿Estás seguro de que quieres ir al capítulo?</p>
+    <button id="yesBtn">Sí</button>
+    <button id="noBtn">No</button>
   </div>
 
-  <div class="bottom-bar">
-    <hr>
-  </div>
-</div>
+  <script>
+    const items = document.querySelectorAll(".menu-item");
+    const confirmBox = document.getElementById("confirmBox");
+    let currentIndex = 0;
 
-<!-- Modal -->
-<div class="modal" id="confirmationModal">
-  <div class="modal-content">
-    <h3>¿Estás seguro de que quieres ir al capítulo?</h3>
-    <button id="confirmYes">Sí</button>
-    <button id="confirmNo">No</button>
-  </div>
-</div>
+    function updateSelection() {
+      items.forEach((item, index) => {
+        item.classList.remove("selected");
+        const heart = item.querySelector(".heart");
+        if (heart) heart.remove();
+      });
 
-<script>
-  const items = document.querySelectorAll('.menu-item');
-  let currentIndex = 0;
+      const selected = items[currentIndex];
+      selected.classList.add("selected");
 
-  function updateSelection() {
-    items.forEach((item, index) => {
-      item.classList.remove('selected');
-      const heartSpan = item.querySelector('span');
-      if (heartSpan) heartSpan.innerHTML = '';
-    });
-
-    const current = items[currentIndex];
-    current.classList.add('selected');
-    if (current.dataset.unlocked === "true") {
-      const heartSpan = current.querySelector('span');
-      if (heartSpan) heartSpan.innerHTML = '<img src="heart.png" class="heart">';
-    }
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown') {
-      do {
-        currentIndex = (currentIndex + 1) % items.length;
-      } while (items[currentIndex].classList.contains('locked'));
-      updateSelection();
-    }
-
-    if (e.key === 'ArrowUp') {
-      do {
-        currentIndex = (currentIndex - 1 + items.length) % items.length;
-      } while (items[currentIndex].classList.contains('locked'));
-      updateSelection();
-    }
-
-    if (e.key.toLowerCase() === 'z') {
-      const current = items[currentIndex];
-      if (current.id === "quit-option") {
-        alert("No puedes, lol");
-      } else if (current.dataset.unlocked === "true") {
-        document.getElementById('confirmationModal').style.display = 'flex';
+      if (selected.dataset.unlocked === "true") {
+        const left = selected.querySelector(".chapter-left") || selected;
+        const img = document.createElement("img");
+        img.src = "heart.png";
+        img.classList.add("heart");
+        left.prepend(img);
       }
     }
 
-    if (e.key.toLowerCase() === 'x') {
-      alert("Volviendo...");
+    function playSound() {
+      const sfx = new Audio('select.mp3');
+      sfx.play();
     }
-  });
 
-  document.getElementById('confirmYes').addEventListener('click', () => {
-    document.getElementById('confirmationModal').style.display = 'none';
-    items[currentIndex].classList.add('book-close');
-    setTimeout(() => {
-      window.location.href = 'chapter1.html'; // redirige después de animación
-    }, 1000);
-  });
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") {
+        do {
+          currentIndex = (currentIndex + 1) % items.length;
+        } while (items[currentIndex].dataset.unlocked === "false");
+        updateSelection();
+        playSound();
+      }
 
-  document.getElementById('confirmNo').addEventListener('click', () => {
-    document.getElementById('confirmationModal').style.display = 'none';
-  });
+      if (e.key === "ArrowUp") {
+        do {
+          currentIndex = (currentIndex - 1 + items.length) % items.length;
+        } while (items[currentIndex].dataset.unlocked === "false");
+        updateSelection();
+        playSound();
+      }
 
-  updateSelection();
-</script>
+      if (e.key.toLowerCase() === "z") {
+        const selected = items[currentIndex];
+        if (selected.classList.contains("quit")) {
+          alert("No puedes lol");
+        } else {
+          confirmBox.style.display = "block";
+        }
+      }
+
+      if (e.key.toLowerCase() === "x") {
+        alert("Regresando al menú anterior...");
+      }
+    });
+
+    document.getElementById("yesBtn").addEventListener("click", () => {
+      confirmBox.style.display = "none";
+      document.getElementById("menu").style.animation = "fadeOutBook 1s forwards";
+      setTimeout(() => {
+        window.location.href = "chapter1.html"; // o cualquier capítulo actual
+      }, 1000);
+    });
+
+    document.getElementById("noBtn").addEventListener("click", () => {
+      confirmBox.style.display = "none";
+    });
+  </script>
 </body>
 </html>
