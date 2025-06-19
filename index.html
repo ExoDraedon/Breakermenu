@@ -347,6 +347,7 @@
           confirmIndex = confirmIndex === 0 ? 1 : 0;
           updateConfirmSelection();
         } else if (e.key.toLowerCase() === 'z') {
+          // Primero se cierra el modal, luego se hace la redirección
           document.getElementById('confirmationModal').style.display = 'none';
           setTimeout(() => {
             if (confirmIndex === 0) {
