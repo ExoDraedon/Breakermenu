@@ -224,23 +224,38 @@
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown') {
-        currentIndex = (currentIndex + 1) % items.length;
-        updateSelection();
-        new Audio('select.mp3').play();
-      } else if (e.key === 'ArrowUp') {
-        currentIndex = (currentIndex - 1 + items.length) % items.length;
-        updateSelection();
-        new Audio('select.mp3').play();
-      } else if (e.key.toLowerCase() === 'z') {
-        const selected = items[currentIndex];
-        if (!selected.classList.contains('locked')) {
-          window.location.href = 'chapter1.html';
-        }
-      } else if (e.key.toLowerCase() === 'x') {
-        alert('Volviendo al menú anterior');
-      }
-    });
+  if (e.key === 'ArrowDown') {
+    let nextIndex = currentIndex;
+    do {
+      nextIndex = (nextIndex + 1) % items.length;
+    } while (items[nextIndex].classList.contains('locked') && nextIndex !== currentIndex);
+
+    if (!items[nextIndex].classList.contains('locked')) {
+      currentIndex = nextIndex;
+      updateSelection();
+      new Audio('select.mp3').play();
+    }
+  } else if (e.key === 'ArrowUp') {
+    let prevIndex = currentIndex;
+    do {
+      prevIndex = (prevIndex - 1 + items.length) % items.length;
+    } while (items[prevIndex].classList.contains('locked') && prevIndex !== currentIndex);
+
+    if (!items[prevIndex].classList.contains('locked')) {
+      currentIndex = prevIndex;
+      updateSelection();
+      new Audio('select.mp3').play();
+    }
+  } else if (e.key.toLowerCase() === 'z') {
+    const selected = items[currentIndex];
+    if (!selected.classList.contains('locked')) {
+      window.location.href = 'chapter1.html'; // Redirigir a página
+    }
+  } else if (e.key.toLowerCase() === 'x') {
+    alert('Volviendo al menú anterior');
+  }
+});
+
 
     document.getElementById('quit').addEventListener('click', () => {
       alert("Quit no es clickeable");
