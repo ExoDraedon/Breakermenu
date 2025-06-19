@@ -20,6 +20,7 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      position: relative;
     }
 
     .menu {
@@ -150,23 +151,28 @@
 
     .book-animation {
       position: absolute;
-      width: 200px;
-      height: 300px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background-color: brown;
-      border-radius: 10px;
       animation: closeBook 2s forwards;
+      z-index: 9999; /* Para asegurarse de que cubra todo */
     }
 
     @keyframes closeBook {
       0% {
         transform: scale(1);
+        opacity: 1;
       }
       50% {
         transform: scaleY(0.1) scaleX(1.2);
+        opacity: 0.5;
       }
       100% {
-        opacity: 0;
+        opacity: 1;
         transform: scaleY(0.1) scaleX(1.2);
+        background-color: black;
       }
     }
 
