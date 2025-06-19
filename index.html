@@ -46,25 +46,18 @@
       color: #888;
       cursor: default;
     }
+
+    /* Capítulos seleccionables */
     .menu-item#chapter1,
     .menu-item#chapter2 {
       cursor: pointer;
       user-select: none;
     }
-    .menu-item#chapter1:hover,
-    .menu-item#chapter1:active,
-    .menu-item#chapter2:hover,
-    .menu-item#chapter2:active {
-      background-color: rgba(255, 255, 0, 0.1);
-    }
+
     .menu-item.selected {
       color: yellow;
     }
-    .menu-item.selected .chapter-name,
-    .menu-item.selected .chapter-desc {
-      color: yellow;
-      font-weight: bold;
-    }
+
     .heart {
       width: 20px;
       height: 20px;
@@ -73,7 +66,9 @@
       top: 50%;
       transform: translateY(-50%);
       animation: pulse 0.8s infinite;
+      pointer-events: none;
     }
+
     @keyframes pulse {
       0%, 100% {
         transform: translateY(-50%) scale(1);
@@ -82,24 +77,29 @@
         transform: translateY(-50%) scale(1.2);
       }
     }
+
     .chapter-name {
       flex: 1;
       text-align: left;
       margin-left: 50px;
     }
+
     .chapter-desc {
       flex: 1;
       text-align: left;
     }
+
     .icon {
       width: 32px;
       height: 32px;
       margin-right: 20px;
       background-color: white;
     }
+
     .selected .icon {
       background-color: yellow;
     }
+
     .bottom-bar {
       display: flex;
       justify-content: space-between;
@@ -112,32 +112,25 @@
       animation: appear 0.3s ease-out forwards;
       animation-delay: 0.8s;
     }
+
     .bottom-bar .spade-icons {
       letter-spacing: 10px;
     }
+
     .bottom-bar span {
       margin-left: 10px;
     }
+
     @keyframes appear {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
+
     @keyframes disappear {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(20px); }
     }
+
     /* Animación de entrada */
     .menu-item:nth-child(1) { animation-delay: 0.1s; }
     .menu-item:nth-child(2) { animation-delay: 0.2s; }
@@ -151,6 +144,7 @@
     .menu-item.hidden {
       animation: disappear 0.3s ease-out forwards;
     }
+
     .menu-item.hidden:nth-child(1) { animation-delay: 0.8s; }
     .menu-item.hidden:nth-child(2) { animation-delay: 0.7s; }
     .menu-item.hidden:nth-child(3) { animation-delay: 0.6s; }
@@ -163,6 +157,7 @@
       animation: disappear 0.3s ease-out forwards;
       animation-delay: 0.1s;
     }
+
     .bottom-bar hr {
       width: 100%;
       border-color: gray;
@@ -174,20 +169,21 @@
   <audio id="backgroundAudio" autoplay loop>
     <source src="menu.mp3" type="audio/mpeg">
   </audio>
+
   <!-- Audios por capítulo -->
   <audio id="chapter1Audio" src="snowgrave.mp3"></audio>
-  <audio id="chapter2Audio" src="snowgrave.mp3"></audio> <!-- Puedes cambiar esto -->
+  <audio id="chapter2Audio" src="snowgrave.mp3"></audio>
 
   <div class="menu" id="menu">
     <div class="menu-content">
       <!-- CAPÍTULOS DEL MENÚ -->
-      <div class="menu-item selected" id="chapter1" onclick="handleChapterClick(1)">
-        <span><img src="heart.png" alt="heart" class="heart"></span>
+      <div class="menu-item selected" id="chapter1">
+        <span></span> <!-- Aquí irá el corazón dinámicamente -->
         <span class="chapter-name">Chapter 1</span>
         <span class="chapter-desc">Blazium</span>
         <div class="icon"></div>
       </div>
-      <div class="menu-item" id="chapter2" onclick="handleChapterClick(2)">
+      <div class="menu-item" id="chapter2">
         <span></span>
         <span class="chapter-name">Chapter 2</span>
         <span class="chapter-desc">Neo Blazium</span>
@@ -239,28 +235,41 @@
     const bottomBar = document.getElementById('bottom-bar');
     let currentIndex = 0;
 
+    // Solo hay un corazón, fuera del DOM inicialmente
+    const heart = document.createElement('img');
+    heart.src = 'heart.png';
+    heart.alt = 'heart';
+    heart.className = 'heart';
+    heart.style.position = 'absolute';
+    heart.style.left = '-30px';
+    heart.style.top = '50%';
+    heart.style.transform = 'translateY(-50%)';
+    heart.style.animation = 'pulse 0.8s infinite';
+    heart.style.width = '20px';
+    heart.style.height = '20px';
+    heart.style.pointerEvents = 'none';
+
     function updateSelection() {
       items.forEach((item, index) => {
         item.classList.remove('selected');
-        const heartSpan = item.querySelector('span');
-        if (heartSpan && index !== 0 && index !== 1) heartSpan.innerHTML = '';
+        item.querySelector('span').innerHTML = ''; // Limpiar contenido para evitar duplicados
       });
+
       const currentItem = items[currentIndex];
       currentItem.classList.add('selected');
-      const heartContainer = currentItem.querySelector('span');
-      if (heartContainer) {
-        heartContainer.innerHTML = '<img src="heart.png" class="heart">';
+
+      // Añadir el corazón al primer <span> del elemento seleccionado
+      const heartSpan = currentItem.querySelector('span');
+      if (heartSpan) {
+        heartSpan.appendChild(heart);
       }
     }
 
     // Manejador para hacer clic en capítulo
     function handleChapterClick(chapterNumber) {
-      if (chapterNumber === 1 || chapterNumber === 2) {
-        // Si es cap 1 o 2, se selecciona y ejecuta la animación
-        currentIndex = chapterNumber - 1;
-        updateSelection();
-        triggerExitAnimationAndRedirect(chapterNumber);
-      }
+      currentIndex = chapterNumber - 1;
+      updateSelection();
+      triggerExitAnimationAndRedirect(chapterNumber);
     }
 
     function triggerExitAnimationAndRedirect(chapterNumber) {
@@ -289,27 +298,28 @@
         if (chapterNumber === 1) {
           window.location.href = 'https://exodraedon.github.io/Blazium/'; 
         } else if (chapterNumber === 2) {
-          window.location.href = 'https://potosarabes.com';  // Cambia esta URL según necesites
+          window.location.href = 'https://potosarabes.com';  // Cambia esto si tienes una URL real
         }
       }, 11000); // 8s audio + 3s espera
     }
 
+    // Eventos del teclado
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') {
-        let nextIndex = currentIndex;
-        do {
+        let nextIndex = (currentIndex + 1) % items.length;
+        while (nextIndex !== currentIndex && items[nextIndex].classList.contains('locked')) {
           nextIndex = (nextIndex + 1) % items.length;
-        } while (items[nextIndex].classList.contains('locked') && nextIndex !== currentIndex);
+        }
         if (!items[nextIndex].classList.contains('locked')) {
           currentIndex = nextIndex;
           updateSelection();
           new Audio('select.mp3').play();
         }
       } else if (e.key === 'ArrowUp') {
-        let prevIndex = currentIndex;
-        do {
+        let prevIndex = (currentIndex - 1 + items.length) % items.length;
+        while (prevIndex !== currentIndex && items[prevIndex].classList.contains('locked')) {
           prevIndex = (prevIndex - 1 + items.length) % items.length;
-        } while (items[prevIndex].classList.contains('locked') && prevIndex !== currentIndex);
+        }
         if (!items[prevIndex].classList.contains('locked')) {
           currentIndex = prevIndex;
           updateSelection();
@@ -318,8 +328,9 @@
       } else if (e.key.toLowerCase() === 'z') {
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
-          if (selected.id === 'chapter1' || selected.id === 'chapter2') {
-            triggerExitAnimationAndRedirect(parseInt(selected.id.replace('chapter', '')));
+          if (selected.id.startsWith('chapter')) {
+            const chapterNumber = parseInt(selected.id.replace('chapter', ''));
+            handleChapterClick(chapterNumber);
           } else {
             bottomBar.classList.add('hidden');
             for (let i = items.length - 1; i >= 0; i--) {
@@ -338,7 +349,7 @@
       alert("No puedes, lol");
     });
 
-    // Inicialización de selección
+    // Inicialización del corazón
     updateSelection();
   </script>
 </body>
