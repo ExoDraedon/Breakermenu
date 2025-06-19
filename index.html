@@ -149,6 +149,7 @@
       margin: 10px 0;
     }
 
+    /* Animación de cierre de libro */
     .book-animation {
       position: absolute;
       top: 0;
@@ -251,6 +252,17 @@
       currentItem.classList.add('selected');
       const heartContainer = currentItem.querySelector('span');
       heartContainer.innerHTML = '<img src="heart.png" class="heart">';
+
+      // Si el capítulo 1 es seleccionado, se activa la animación de libro
+      if (currentIndex === 0) {
+        const bookAnimation = document.createElement('div');
+        bookAnimation.classList.add('book-animation');
+        document.body.appendChild(bookAnimation);
+        
+        setTimeout(() => {
+          document.body.style.backgroundColor = 'black'; // Mantener fondo negro
+        }, 2000); // Después de 2 segundos, fondo negro y nada más
+      }
     }
 
     document.addEventListener('keydown', (e) => {
