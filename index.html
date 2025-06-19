@@ -1,127 +1,199 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>DELTARUNE Menú</title>
+  <meta charset="UTF-8">
+  <title>DELTARUNE Menu Recreation</title>
   <style>
     @font-face {
       font-family: 'Determination';
-      src: url('determination.ttf');
+      src: url('determination.ttf') format('truetype');
     }
 
     body {
-      margin: 0;
-      padding: 0;
       background-color: black;
       color: white;
-      font-family: 'Determination', monospace;
+      font-family: 'Determination', 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
     }
 
-    .menu-container {
-      width: 900px;
-      margin: 40px auto;
+    .menu {
+      width: 700px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      animation: fadeIn 1s ease-out forwards;
+      text-align: center;
     }
 
     .menu-item {
-      width: 100%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 15px 0;
-      font-size: 28px;
-      border-bottom: 2px solid #888;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 0;
+      font-size: 24px;
+      transition: color 0.2s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: appear 0.3s ease-out forwards;
       position: relative;
+      border-bottom: 2px solid white;
+      color: #888;
+    }
+
+    .menu-item.selected {
+      color: yellow;
+    }
+
+    .menu-item.selected .chapter-name,
+    .menu-item.selected .chapter-desc {
+      color: yellow;
+      font-weight: bold;
     }
 
     .menu-item.locked {
       color: #555;
     }
 
-    .menu-item.selected .heart {
-      position: absolute;
-      left: -40px;
-      top: 50%;
-      transform: translateY(-50%);
+    .menu-item.locked .chapter-name,
+    .menu-item.locked .chapter-desc {
+      color: #555;
+    }
+
+    .heart {
       width: 20px;
       height: 20px;
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: pulse 0.8s infinite;
     }
 
-    .menu-item .chapter-left {
-      display: flex;
-      align-items: center;
+    @keyframes pulse {
+      0%, 100% {
+        transform: translateY(-50%) scale(1);
+      }
+      50% {
+        transform: translateY(-50%) scale(1.2);
+      }
     }
 
-    .menu-item .chapter-name {
-      margin-right: 40px;
+    .chapter-name {
+      flex: 1;
+      text-align: left;
+      margin-left: 50px;
+    }
+
+    .chapter-desc {
+      flex: 1;
+      text-align: left;
     }
 
     .icon {
       width: 32px;
       height: 32px;
+      margin-right: 20px;
       background-color: white;
-      border: 2px solid black;
     }
 
-    .icon.yellow {
+    .selected .icon {
       background-color: yellow;
     }
 
-    .copyright {
-      margin-top: 40px;
-      font-size: 18px;
+    .bottom-bar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      font-size: 16px;
       width: 100%;
     }
 
-    .quit.selected .heart {
-      position: absolute;
-      left: -40px;
-      top: 50%;
-      transform: translateY(-50%);
+    .bottom-bar .spade-icons {
+      letter-spacing: 10px;
     }
 
-    .confirmation {
-      position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -30%);
-      background: black;
-      border: 2px solid white;
-      padding: 40px;
-      text-align: center;
+    .bottom-bar span {
+      margin-left: 10px;
+    }
+
+    @keyframes appear {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .menu-item:nth-child(1) { animation-delay: 0.1s; }
+    .menu-item:nth-child(2) { animation-delay: 0.2s; }
+    .menu-item:nth-child(3) { animation-delay: 0.3s; }
+    .menu-item:nth-child(4) { animation-delay: 0.4s; }
+    .menu-item:nth-child(5) { animation-delay: 0.5s; }
+    .menu-item:nth-child(6) { animation-delay: 0.6s; }
+    .menu-item:nth-child(7) { animation-delay: 0.7s; }
+
+    .bottom-bar hr {
+      width: 100%;
+      border-color: gray;
+      margin: 10px 0;
+    }
+
+    /* Popup Modal Styles */
+    .modal {
       display: none;
-      z-index: 999;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
     }
 
-    .confirmation p {
-      font-size: 22px;
-      margin-bottom: 20px;
+    .modal-content {
+      background-color: black;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .confirmation button {
-      margin: 5px;
-      padding: 10px 30px;
-      font-family: 'Determination';
-      font-size: 20px;
-      cursor: pointer;
-      border: none;
+    .modal button {
       background-color: yellow;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
     }
 
-    @keyframes fadeOutBook {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scaleX(0); opacity: 0; }
+    .modal button:hover {
+      background-color: white;
+      color: black;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    /* Animación de cerrar como libro */
+    @keyframes closeBook {
+      0% { transform: scaleX(1); }
+      50% { transform: scaleX(0); }
+      100% { transform: scaleX(1); }
+    }
+
+    .book-close {
+      animation: closeBook 1s forwards;
     }
   </style>
 </head>
@@ -130,134 +202,133 @@
     <source src="menu.mp3" type="audio/mpeg">
   </audio>
 
-  <div class="menu-container" id="menu">
-    <div class="menu-item selected" data-unlocked="true">
-      <div class="chapter-left">
-        <img src="heart.png" class="heart" />
-        <span class="chapter-name">Chapter 1</span>
-        <span>* ❤️ Play</span>
-      </div>
-      <span>Do Not</span>
-      <div class="icon yellow"></div>
-    </div>
-    <div class="menu-item" data-unlocked="true">
-      <div class="chapter-left">
-        <span class="chapter-name">Chapter 2</span>
-        <span>*</span>
-      </div>
-      <span>A Cyber's World</span>
+  <div class="menu" id="menu">
+    <!-- CAPÍTULOS DEL MENÚ -->
+    <div class="menu-item selected">
+      <span><img src="heart.png" alt="heart" class="heart"></span>
+      <span class="chapter-name">Chapter 1</span>
+      <span class="chapter-desc">The Beginning</span>
       <div class="icon"></div>
     </div>
-    <div class="menu-item" data-unlocked="true">
-      <div class="chapter-left">
-        <span class="chapter-name">Chapter 3</span>
-        <span>*</span>
-      </div>
-      <span>Late Night</span>
+    <div class="menu-item locked">
+      <span></span>
+      <span class="chapter-name">Chapter 2</span>
+      <span class="chapter-desc">A Cyber's World</span>
       <div class="icon"></div>
     </div>
-    <div class="menu-item" data-unlocked="true">
-      <div class="chapter-left">
-        <span class="chapter-name">Chapter 4</span>
-        <span>*</span>
-      </div>
-      <span>Prophecy</span>
+    <div class="menu-item locked">
+      <span></span>
+      <span class="chapter-name">Chapter 3</span>
+      <span class="chapter-desc">Late Night</span>
       <div class="icon"></div>
     </div>
-    <div class="menu-item locked" data-unlocked="false">
-      <div class="chapter-left">
-        <span class="chapter-name">Chapter 5</span>
-      </div>
-      <span>--</span>
+    <div class="menu-item locked">
+      <span></span>
+      <span class="chapter-name">Chapter 4</span>
+      <span class="chapter-desc">Prophecy</span>
+      <div class="icon"></div>
+    </div>
+    <div class="menu-item locked">
+      <span></span>
+      <span class="chapter-name">Chapter 5</span>
+      <span class="chapter-desc">--</span>
+      <div class="icon"></div>
+    </div>
+    <div class="menu-item locked">
+      <span></span>
+      <span class="chapter-name">Chapter 6</span>
+      <span class="chapter-desc">--</span>
+      <div class="icon"></div>
+    </div>
+    <div class="menu-item locked">
+      <span></span>
+      <span class="chapter-name">Chapter 7</span>
+      <span class="chapter-desc">--</span>
       <div class="icon"></div>
     </div>
 
-    <div class="copyright menu-item quit" data-unlocked="true">
-      <div style="display: flex; flex-direction: column;">
-        <span>(C) Toby Fox 2018–2025</span>
-        <span>DELTARUNE v14</span>
-      </div>
-      <span>Quit</span>
-      <div class="icon yellow"></div>
+    <div class="bottom-bar">
+      <span>(C) Toby Fox 2018–2025<br>DELTARUNE v14</span>
+      <span id="quit">Quit</span>
+      <span>日本語</span>
+      <span class="spade-icons">♠ ♠ ♠</span>
     </div>
+    <hr>
   </div>
 
-  <div class="confirmation" id="confirmBox">
-    <p>¿Estás seguro de que quieres ir al capítulo?</p>
-    <button id="yesBtn">Sí</button>
-    <button id="noBtn">No</button>
+  <!-- Modal de confirmación -->
+  <div class="modal" id="confirmationModal">
+    <div class="modal-content">
+      <h3>¿Estás seguro de que quieres ir al capítulo?</h3>
+      <button id="confirmYes">Sí</button>
+      <button id="confirmNo">No</button>
+    </div>
   </div>
 
   <script>
-    const items = document.querySelectorAll(".menu-item");
-    const confirmBox = document.getElementById("confirmBox");
+    const items = document.querySelectorAll('.menu-item');
     let currentIndex = 0;
 
     function updateSelection() {
       items.forEach((item, index) => {
-        item.classList.remove("selected");
-        const heart = item.querySelector(".heart");
-        if (heart) heart.remove();
+        item.classList.remove('selected');
+        const heartSpan = item.querySelector('span');
+        if (heartSpan) heartSpan.innerHTML = '';
       });
-
-      const selected = items[currentIndex];
-      selected.classList.add("selected");
-
-      if (selected.dataset.unlocked === "true") {
-        const left = selected.querySelector(".chapter-left") || selected;
-        const img = document.createElement("img");
-        img.src = "heart.png";
-        img.classList.add("heart");
-        left.prepend(img);
-      }
+      const currentItem = items[currentIndex];
+      currentItem.classList.add('selected');
+      const heartContainer = currentItem.querySelector('span');
+      heartContainer.innerHTML = '<img src="heart.png" class="heart">';
     }
 
-    function playSound() {
-      const sfx = new Audio('select.mp3');
-      sfx.play();
-    }
-
-    document.addEventListener("keydown", e => {
-      if (e.key === "ArrowDown") {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        let nextIndex = currentIndex;
         do {
-          currentIndex = (currentIndex + 1) % items.length;
-        } while (items[currentIndex].dataset.unlocked === "false");
-        updateSelection();
-        playSound();
-      }
+          nextIndex = (nextIndex + 1) % items.length;
+        } while (items[nextIndex].classList.contains('locked') && nextIndex !== currentIndex);
 
-      if (e.key === "ArrowUp") {
-        do {
-          currentIndex = (currentIndex - 1 + items.length) % items.length;
-        } while (items[currentIndex].dataset.unlocked === "false");
-        updateSelection();
-        playSound();
-      }
-
-      if (e.key.toLowerCase() === "z") {
-        const selected = items[currentIndex];
-        if (selected.classList.contains("quit")) {
-          alert("No puedes lol");
-        } else {
-          confirmBox.style.display = "block";
+        if (!items[nextIndex].classList.contains('locked')) {
+          currentIndex = nextIndex;
+          updateSelection();
+          new Audio('select.mp3').play();
         }
-      }
+      } else if (e.key === 'ArrowUp') {
+        let prevIndex = currentIndex;
+        do {
+          prevIndex = (prevIndex - 1 + items.length) % items.length;
+        } while (items[prevIndex].classList.contains('locked') && prevIndex !== currentIndex);
 
-      if (e.key.toLowerCase() === "x") {
-        alert("Regresando al menú anterior...");
+        if (!items[prevIndex].classList.contains('locked')) {
+          currentIndex = prevIndex;
+          updateSelection();
+          new Audio('select.mp3').play();
+        }
+      } else if (e.key.toLowerCase() === 'z') {
+        const selected = items[currentIndex];
+        if (!selected.classList.contains('locked')) {
+          document.getElementById('confirmationModal').style.display = 'flex';
+        }
+      } else if (e.key.toLowerCase() === 'x') {
+        alert('Volviendo al menú anterior');
       }
     });
 
-    document.getElementById("yesBtn").addEventListener("click", () => {
-      confirmBox.style.display = "none";
-      document.getElementById("menu").style.animation = "fadeOutBook 1s forwards";
+    document.getElementById('quit').addEventListener('click', () => {
+      alert("No puedes, lol");
+    });
+
+    document.getElementById('confirmYes').addEventListener('click', () => {
+      document.getElementById('confirmationModal').style.display = 'none';
+      const selected = items[currentIndex];
+      selected.classList.add('book-close'); // Animación de cierre tipo libro
       setTimeout(() => {
-        window.location.href = "chapter1.html"; // o cualquier capítulo actual
-      }, 1000);
+        window.location.href = 'chapter1.html';
+      }, 1000); // Esperar la animación
     });
 
-    document.getElementById("noBtn").addEventListener("click", () => {
-      confirmBox.style.display = "none";
+    document.getElementById('confirmNo').addEventListener('click', () => {
+      document.getElementById('confirmationModal').style.display = 'none';
     });
   </script>
 </body>
