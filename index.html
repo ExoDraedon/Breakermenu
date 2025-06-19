@@ -27,7 +27,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
+      text-align: left;
+    }
+
+    .menu-content {
+      width: 100%;
     }
 
     .menu-item {
@@ -113,6 +117,9 @@
       margin-top: 20px;
       font-size: 16px;
       width: 100%;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: appear 0.3s ease-out forwards;
     }
 
     .bottom-bar .spade-icons {
@@ -154,7 +161,11 @@
     .menu-item:nth-child(6) { animation-delay: 0.6s; }
     .menu-item:nth-child(7) { animation-delay: 0.7s; }
 
-    /* Animación de salida (desde abajo hacia arriba, rápido al principio y más lento después) */
+    .bottom-bar {
+      animation-delay: 0.8s;
+    }
+
+    /* Animación de salida */
     .menu-item.hidden {
       animation: disappear 0.3s ease-out forwards;
     }
@@ -164,8 +175,13 @@
     .menu-item.hidden:nth-child(3) { animation-delay: 0.6s; }
     .menu-item.hidden:nth-child(4) { animation-delay: 0.5s; }
     .menu-item.hidden:nth-child(5) { animation-delay: 0.4s; }
-    .menu-item.hidden:nth-child(6) { animation-delay: 0.2s; }
-    .menu-item.hidden:nth-child(7) { animation-delay: 0.1s; }
+    .menu-item.hidden:nth-child(6) { animation-delay: 0.3s; }
+    .menu-item.hidden:nth-child(7) { animation-delay: 0.2s; }
+
+    .bottom-bar.hidden {
+      animation: disappear 0.3s ease-out forwards;
+      animation-delay: 0.1s;
+    }
 
     .bottom-bar hr {
       width: 100%;
@@ -181,61 +197,64 @@
   </audio>
 
   <div class="menu" id="menu">
-    <!-- CAPÍTULOS DEL MENÚ -->
-    <div class="menu-item selected">
-      <span><img src="heart.png" alt="heart" class="heart"></span>
-      <span class="chapter-name">Chapter 1</span>
-      <span class="chapter-desc">The Beginning</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 2</span>
-      <span class="chapter-desc">A Cyber's World</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 3</span>
-      <span class="chapter-desc">Late Night</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 4</span>
-      <span class="chapter-desc">Prophecy</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 5</span>
-      <span class="chapter-desc">--</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 6</span>
-      <span class="chapter-desc">--</span>
-      <div class="icon"></div>
-    </div>
-    <div class="menu-item locked">
-      <span></span>
-      <span class="chapter-name">Chapter 7</span>
-      <span class="chapter-desc">--</span>
-      <div class="icon"></div>
-    </div>
+    <div class="menu-content">
+      <!-- CAPÍTULOS DEL MENÚ -->
+      <div class="menu-item selected">
+        <span><img src="heart.png" alt="heart" class="heart"></span>
+        <span class="chapter-name">Chapter 1</span>
+        <span class="chapter-desc">The Beginning</span>
+        <div class="icon"></div>
+      </div>
+      <div class="menu-item locked">
+        <span></span>
+        <span class="chapter-name">Chapter 2</span>
+        <span class="chapter-desc">A Cyber's World</span>
+        <div class="icon"></div>
+      </div>
+      <div class="menu-item locked">
+        <span></span>
+        <span class="chapter-name">Chapter 3</span>
+        <span class="chapter-desc">Late Night</span>
+        <div class="icon"></div>
+      </div>
+      <div class="menu-item locked">
+        <span></span>
+        <span class="chapter-name">Chapter 4</span>
+        <span class="chapter-desc">Prophecy</span>
+        <div class="icon"></div>
+      </div>
+      <div class="menu-item locked">
+        <span></span>
+        <span class="chapter-name">Chapter 5</span>
+        <span class="chapter-desc">--</span>
+        <div class="icon"></div>
+      </div>
+      <div class="menu-item locked">
+        <span></span>
+        <span class="chapter-name">Chapter 6</span>
+        <span class="chapter-desc">--</span>
+        <div class="icon"></div>
+      </div>
+      <div class="menu-item locked">
+        <span></span>
+        <span class="chapter-name">Chapter 7</span>
+        <span class="chapter-desc">--</span>
+        <div class="icon"></div>
+      </div>
 
-    <div class="bottom-bar">
-      <span>(C) Toby Fox 2018–2025<br>DELTARUNE v14</span>
-      <span id="quit">Quit</span>
-      <span>日本語</span>
-      <span class="spade-icons">♠ ♠ ♠</span>
+      <div class="bottom-bar" id="bottom-bar">
+        <span>(C) Toby Fox 2018–2025<br>DELTARUNE v14</span>
+        <span id="quit">Quit</span>
+        <span>日本語</span>
+        <span class="spade-icons">♠ ♠ ♠</span>
+      </div>
     </div>
     <hr>
   </div>
 
   <script>
     const items = document.querySelectorAll('.menu-item');
+    const bottomBar = document.getElementById('bottom-bar');
     let currentIndex = 0;
 
     function updateSelection() {
@@ -276,11 +295,14 @@
       } else if (e.key.toLowerCase() === 'z') {
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
-          // Desaparecer del 7 al 1 con delay progresivo más rápido al inicio
+          // Ocultar el bottom-bar primero
+          bottomBar.classList.add('hidden');
+
+          // Luego ocultar los elementos del menú en orden inverso
           for (let i = items.length - 1; i >= 0; i--) {
             setTimeout(() => {
               items[i].classList.add('hidden');
-            }, (items.length - i) * 60); // Ajusta este número para cambiar velocidad
+            }, (items.length - i) * 60); // Ajusta este número para velocidad
           }
         }
       } else if (e.key.toLowerCase() === 'x') {
