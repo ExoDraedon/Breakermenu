@@ -154,16 +154,16 @@
     .menu-item:nth-child(6) { animation-delay: 0.6s; }
     .menu-item:nth-child(7) { animation-delay: 0.7s; }
 
-    /* Animación de salida */
+    /* Animación de salida (desde abajo hacia arriba, rápido al principio y más lento después) */
     .menu-item.hidden {
       animation: disappear 0.3s ease-out forwards;
     }
 
-    .menu-item.hidden:nth-child(1) { animation-delay: 0.7s; }
-    .menu-item.hidden:nth-child(2) { animation-delay: 0.6s; }
-    .menu-item.hidden:nth-child(3) { animation-delay: 0.5s; }
-    .menu-item.hidden:nth-child(4) { animation-delay: 0.4s; }
-    .menu-item.hidden:nth-child(5) { animation-delay: 0.3s; }
+    .menu-item.hidden:nth-child(1) { animation-delay: 0.8s; }
+    .menu-item.hidden:nth-child(2) { animation-delay: 0.7s; }
+    .menu-item.hidden:nth-child(3) { animation-delay: 0.6s; }
+    .menu-item.hidden:nth-child(4) { animation-delay: 0.5s; }
+    .menu-item.hidden:nth-child(5) { animation-delay: 0.4s; }
     .menu-item.hidden:nth-child(6) { animation-delay: 0.2s; }
     .menu-item.hidden:nth-child(7) { animation-delay: 0.1s; }
 
@@ -276,11 +276,11 @@
       } else if (e.key.toLowerCase() === 'z') {
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
-          // Remover animación de desaparecer en orden inverso
+          // Desaparecer del 7 al 1 con delay progresivo más rápido al inicio
           for (let i = items.length - 1; i >= 0; i--) {
             setTimeout(() => {
               items[i].classList.add('hidden');
-            }, 100 * (items.length - i));
+            }, (items.length - i) * 60); // Ajusta este número para cambiar velocidad
           }
         }
       } else if (e.key.toLowerCase() === 'x') {
