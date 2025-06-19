@@ -161,43 +161,27 @@
       align-items: center;
     }
 
-    .confirmation-box {
+    .modal-content {
       background-color: black;
-      padding: 30px;
+      padding: 20px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      border: 4px solid white;
-      font-size: 28px;
-      font-family: 'Determination', monospace;
-      gap: 20px;
-    }
-
-    .confirmation-option {
-      display: flex;
       align-items: center;
-      color: white;
-      cursor: pointer;
-      font-weight: normal;
     }
 
-    .confirmation-option.selected {
-      color: yellow;
-      font-weight: bold;
-    }
-
-    .confirm-icon {
-      width: 32px;
-      height: 32px;
-      border: 3px solid white;
-      margin-left: 20px;
-      text-align: center;
-      line-height: 28px;
-      font-size: 20px;
-    }
-
-    .confirmation-option.selected .confirm-icon {
+    .modal button {
       background-color: yellow;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .modal button:hover {
+      background-color: white;
       color: black;
     }
 
@@ -274,23 +258,16 @@
 
   <!-- Modal de confirmación -->
   <div class="modal" id="confirmationModal">
-    <div class="confirmation-box">
-      <div class="confirmation-option selected">
-        <span style="color: red;">♥</span> Play
-        <div class="confirm-icon">♠</div>
-      </div>
-      <div class="confirmation-option">
-        Do Not
-        <div class="confirm-icon"></div>
-      </div>
+    <div class="modal-content">
+      <h3>¿Estás seguro de que quieres ir al capítulo?</h3>
+      <button id="confirmYes">Sí</button>
+      <button id="confirmNo">No</button>
     </div>
   </div>
 
   <script>
     const items = document.querySelectorAll('.menu-item');
     let currentIndex = 0;
-    const confirmOptions = document.querySelectorAll('.confirmation-option');
-    let confirmIndex = 0;
 
     function updateSelection() {
       items.forEach((item, index) => {
@@ -302,12 +279,6 @@
       currentItem.classList.add('selected');
       const heartContainer = currentItem.querySelector('span');
       heartContainer.innerHTML = '<img src="heart.png" class="heart">';
-    }
-
-    function updateConfirmSelection() {
-      confirmOptions.forEach((opt, idx) => {
-        opt.classList.toggle('selected', idx === confirmIndex);
-      });
     }
 
     document.addEventListener('keydown', (e) => {
@@ -337,35 +308,27 @@
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
           document.getElementById('confirmationModal').style.display = 'flex';
-          updateConfirmSelection(); // Asegúrate de actualizar la selección
         }
       } else if (e.key.toLowerCase() === 'x') {
         alert('Volviendo al menú anterior');
-      }
-
-      if (document.getElementById('confirmationModal').style.display === 'flex') {
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-          confirmIndex = confirmIndex === 0 ? 1 : 0;
-          updateConfirmSelection();
-        } else if (e.key.toLowerCase() === 'z') {
-          // Cerrar el modal y hacer la animación
-          document.getElementById('confirmationModal').style.display = 'none';
-          setTimeout(() => {
-            if (confirmIndex === 0) {
-              items[currentIndex].classList.add('book-close');
-              setTimeout(() => {
-                window.location.href = 'chapter1.html';  // Cambia la URL según corresponda
-              }, 1000);  // Retraso para que la animación termine
-            }
-          }, 200);  // Retraso para la animación
-        } else if (e.key.toLowerCase() === 'x') {
-          document.getElementById('confirmationModal').style.display = 'none';
-        }
       }
     });
 
     document.getElementById('quit').addEventListener('click', () => {
       alert("No puedes, lol");
+    });
+
+    document.getElementById('confirmYes').addEventListener('click', () => {
+      document.getElementById('confirmationModal').style.display = 'none';
+      const selected = items[currentIndex];
+      selected.classList.add('book-close'); // Animación de cierre tipo libro
+      setTimeout(() => {
+        window.location.href = 'chapter1.html';
+      }, 1000); // Esperar la animación
+    });
+
+    document.getElementById('confirmNo').addEventListener('click', () => {
+      document.getElementById('confirmationModal').style.display = 'none';
     });
   </script>
 </body>
