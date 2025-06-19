@@ -134,6 +134,17 @@
       }
     }
 
+    @keyframes disappear {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
     .menu-item:nth-child(1) { animation-delay: 0.1s; }
     .menu-item:nth-child(2) { animation-delay: 0.2s; }
     .menu-item:nth-child(3) { animation-delay: 0.3s; }
@@ -142,22 +153,16 @@
     .menu-item:nth-child(6) { animation-delay: 0.6s; }
     .menu-item:nth-child(7) { animation-delay: 0.7s; }
 
+    .menu-item.hidden {
+      animation: disappear 0.3s ease-out forwards;
+    }
+
     .bottom-bar hr {
       width: 100%;
       border-color: gray;
       margin: 10px 0;
     }
 
-    /* Animación de cerrar como libro */
-    @keyframes closeBook {
-      0% { transform: scaleX(1); }
-      50% { transform: scaleX(0); }
-      100% { transform: scaleX(1); }
-    }
-
-    .book-close {
-      animation: closeBook 1s forwards;
-    }
   </style>
 </head>
 <body>
@@ -261,10 +266,12 @@
       } else if (e.key.toLowerCase() === 'z') {
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
-          items.forEach(item => item.classList.add('book-close')); // Aplicar la animación a todos los elementos
+          // Remover animación de desaparecer en orden
           setTimeout(() => {
-            window.location.href = 'https://www.youtube.com'; // Redirección a YouTube
-          }, 1000); // Esperar a que termine la animación
+            items.forEach((item, index) => {
+              item.classList.add('hidden');
+            });
+          }, 100);
         }
       } else if (e.key.toLowerCase() === 'x') {
         alert('Volviendo al menú anterior');
