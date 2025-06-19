@@ -14,29 +14,34 @@
       color: white;
       font-family: 'Determination', monospace;
       margin: 0;
-      padding: 40px;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
     }
 
     .menu {
       width: 600px;
-      margin: auto;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      align-items: center;
+      text-align: center;
     }
 
     .menu-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 2px solid #333;
+      width: 100%;
       padding: 12px 0;
       font-size: 24px;
       transition: color 0.2s;
       opacity: 0;
       transform: translateY(20px);
       animation: appear 0.3s ease-out forwards;
+      position: relative;
     }
 
     .menu-item.selected {
@@ -46,7 +51,10 @@
     .heart {
       width: 20px;
       height: 20px;
-      margin-right: 20px;
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
       transition: transform 0.2s;
     }
 
@@ -65,6 +73,11 @@
 
     .menu-item.locked {
       color: gray;
+      border-bottom: 2px solid white;
+    }
+
+    .menu-item.locked .chapter-name {
+      color: gray;
     }
 
     .bottom-bar {
@@ -72,10 +85,15 @@
       justify-content: space-between;
       margin-top: 20px;
       font-size: 16px;
+      width: 100%;
     }
 
     .bottom-bar .spade-icons {
       letter-spacing: 10px;
+    }
+
+    .bottom-bar span {
+      margin-left: 10px;
     }
 
     @keyframes appear {
@@ -86,6 +104,18 @@
       100% {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+
+    @keyframes heartMove {
+      0% {
+        transform: translateY(-50%);
+      }
+      50% {
+        transform: translateY(-60%);
+      }
+      100% {
+        transform: translateY(-50%);
       }
     }
 
@@ -117,15 +147,10 @@
       animation-delay: 0.7s;
     }
 
-    @keyframes exit {
-      0% {
-        opacity: 1;
-        transform: rotateX(0deg);
-      }
-      100% {
-        opacity: 0;
-        transform: rotateX(90deg);
-      }
+    .bottom-bar hr {
+      width: 100%;
+      border-color: gray;
+      margin: 10px 0;
     }
 
   </style>
@@ -185,6 +210,7 @@
       <span>日本語</span>
       <span class="spade-icons">♠ ♠ ♠</span>
     </div>
+    <hr>
   </div>
 
   <script>
@@ -207,15 +233,22 @@
         currentIndex = (currentIndex + 1) % items.length;
         updateSelection();
         heart.style.transform = "translateY(10px)";
+        heart.style.animation = "heartMove 0.5s ease-in-out infinite";
         new Audio('select.mp3').play();
       } else if (e.key === 'ArrowUp') {
         currentIndex = (currentIndex - 1 + items.length) % items.length;
         updateSelection();
         heart.style.transform = "translateY(-10px)";
+        heart.style.animation = "heartMove 0.5s ease-in-out infinite";
         new Audio('select.mp3').play();
       } else if (e.key === 'z' || e.key === 'Z') {
-        // Seleccionar el capítulo
-        alert(`Has seleccionado ${items[currentIndex].innerText.split('\n')[0]}`);
+        // Seleccionar capítulo 1
+        if (currentIndex === 0) {
+          document.querySelector('.menu').style.animation = 'exit 0.5s ease-out forwards';
+          setTimeout(() => {
+            window.location.href = 'chapter1.html'; // Redirección a otra página
+          }, 500);
+        }
       } else if (e.key === 'x' || e.key === 'X') {
         // Volver
         alert('Volviendo al menú anterior');
@@ -223,10 +256,8 @@
     });
 
     document.getElementById('quit').addEventListener('click', () => {
-      document.querySelector('.menu').style.animation = 'exit 0.5s ease-out forwards';
-      setTimeout(() => {
-        window.close(); // Cierra la ventana después de la animación
-      }, 500);
+      // Mostrar como botón pero no interactuable
+      alert("Quit no es clickeable");
     });
   </script>
 </body>
