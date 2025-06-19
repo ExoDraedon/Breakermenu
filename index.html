@@ -201,9 +201,12 @@
   </style>
 </head>
 <body>
-  <audio autoplay loop>
+  <audio id="backgroundAudio" autoplay loop>
     <source src="menu.mp3" type="audio/mpeg">
   </audio>
+
+  <!-- Audio de Chapter 1 -->
+  <audio id="chapter1Audio" src="snowgrave.mp3"></audio>
 
   <div class="menu" id="menu">
     <div class="menu-content">
@@ -211,25 +214,25 @@
       <div class="menu-item selected" id="chapter1" onclick="handleChapter1Click()">
         <span><img src="heart.png" alt="heart" class="heart"></span>
         <span class="chapter-name">Chapter 1</span>
-        <span class="chapter-desc">The Beginning</span>
+        <span class="chapter-desc">Blazium</span>
         <div class="icon"></div>
       </div>
       <div class="menu-item locked">
         <span></span>
         <span class="chapter-name">Chapter 2</span>
-        <span class="chapter-desc">A Cyber's World</span>
+        <span class="chapter-desc">--</span>
         <div class="icon"></div>
       </div>
       <div class="menu-item locked">
         <span></span>
         <span class="chapter-name">Chapter 3</span>
-        <span class="chapter-desc">Late Night</span>
+        <span class="chapter-desc">--</span>
         <div class="icon"></div>
       </div>
       <div class="menu-item locked">
         <span></span>
         <span class="chapter-name">Chapter 4</span>
-        <span class="chapter-desc">Prophecy</span>
+        <span class="chapter-desc">--</span>
         <div class="icon"></div>
       </div>
       <div class="menu-item locked">
@@ -252,10 +255,10 @@
       </div>
 
       <div class="bottom-bar" id="bottom-bar">
-        <span>(C) Toby Fox 2018–2025<br>DELTARUNE v14</span>
+        <span>(C) Sir Exo Chafasafio 6 - Blazium 2020-2025<br>CODE BREAKER v1</span>
         <span id="quit">Quit</span>
-        <span>日本語</span>
-        <span class="spade-icons">♠ ♠ ♠</span>
+        <span>2025</span>
+        <span class="spade-icons">Nameless</span>
       </div>
     </div>
     <hr>
@@ -281,11 +284,10 @@
     function handleChapter1Click() {
       const chapter1 = document.getElementById('chapter1');
       if (!chapter1.classList.contains('selected')) {
-        // Si no está seleccionado, seleccionarlo visualmente
         items.forEach(item => item.classList.remove('selected'));
         chapter1.classList.add('selected');
         chapter1.querySelector('span').innerHTML = '<img src="heart.png" class="heart">';
-        currentIndex = 0; // Chapter 1 es el índice 0
+        currentIndex = 0;
       }
 
       triggerExitAnimationAndRedirect();
@@ -293,7 +295,10 @@
 
     function triggerExitAnimationAndRedirect() {
       const chapter1 = document.getElementById('chapter1');
+      const backgroundAudio = document.getElementById('backgroundAudio');
+      const chapter1Audio = document.getElementById('chapter1Audio');
 
+      // Ocultar elementos
       chapter1.classList.add('hidden');
       bottomBar.classList.add('hidden');
 
@@ -301,13 +306,21 @@
         if (items[i].id !== 'chapter1') {
           setTimeout(() => {
             items[i].classList.add('hidden');
-          }, (items.length - i) * 60); // Ajusta velocidad aquí
+          }, (items.length - i) * 60);
         }
       }
 
+      // Detener música de fondo
+      backgroundAudio.pause();
+
+      // Reproducir snowgrave.mp3
+      chapter1Audio.currentTime = 0;
+      chapter1Audio.play();
+
+      // Redirigir 3 segundos después de que termine el audio (8 + 3 = 11 segundos)
       setTimeout(() => {
-        window.location.href = 'https://youtube.com'; 
-      }, 3000); // 3 segundos
+        window.location.href = 'https://exodraedon.github.io/Blazium/'; 
+      }, 11000); // 8s audio + 3s espera
     }
 
     document.addEventListener('keydown', (e) => {
