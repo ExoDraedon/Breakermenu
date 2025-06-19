@@ -348,12 +348,14 @@
           updateConfirmSelection();
         } else if (e.key.toLowerCase() === 'z') {
           document.getElementById('confirmationModal').style.display = 'none';
-          if (confirmIndex === 0) {
-            items[currentIndex].classList.add('book-close');
-            setTimeout(() => {
-              window.location.href = 'chapter1.html';
-            }, 1000);
-          }
+          setTimeout(() => {
+            if (confirmIndex === 0) {
+              items[currentIndex].classList.add('book-close');
+              setTimeout(() => {
+                window.location.href = 'chapter1.html';
+              }, 1000);
+            }
+          }, 200);  // Retraso para la animación
         } else if (e.key.toLowerCase() === 'x') {
           document.getElementById('confirmationModal').style.display = 'none';
         }
