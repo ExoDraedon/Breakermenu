@@ -337,6 +337,7 @@
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
           document.getElementById('confirmationModal').style.display = 'flex';
+          updateConfirmSelection(); // Asegúrate de actualizar la selección
         }
       } else if (e.key.toLowerCase() === 'x') {
         alert('Volviendo al menú anterior');
@@ -347,14 +348,14 @@
           confirmIndex = confirmIndex === 0 ? 1 : 0;
           updateConfirmSelection();
         } else if (e.key.toLowerCase() === 'z') {
-          // Primero se cierra el modal, luego se hace la redirección
+          // Cerrar el modal y hacer la animación
           document.getElementById('confirmationModal').style.display = 'none';
           setTimeout(() => {
             if (confirmIndex === 0) {
               items[currentIndex].classList.add('book-close');
               setTimeout(() => {
-                window.location.href = 'chapter1.html';
-              }, 1000);
+                window.location.href = 'chapter1.html';  // Cambia la URL según corresponda
+              }, 1000);  // Retraso para que la animación termine
             }
           }, 200);  // Retraso para la animación
         } else if (e.key.toLowerCase() === 'x') {
