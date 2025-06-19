@@ -261,7 +261,8 @@
 
         setTimeout(() => {
           document.body.style.backgroundColor = 'black'; // Mantener fondo negro
-        }, 2000); // Después de 2 segundos, fondo negro y nada más
+          document.querySelector('.menu').style.display = 'none'; // Esconde el menú
+        }, 2000); // Después de 2 segundos, fondo negro y menú desaparece
       }
     }
 
@@ -295,7 +296,8 @@
 
         setTimeout(() => {
           document.body.style.backgroundColor = 'black'; // Mantener fondo negro
-        }, 2000); // Después de 2 segundos, fondo negro y nada más
+          document.querySelector('.menu').style.display = 'none'; // Esconde el menú
+        }, 2000); // Después de 2 segundos, fondo negro y menú desaparece
       } else if (e.key.toLowerCase() === 'x') {
         alert('Volviendo al menú anterior');
       }
