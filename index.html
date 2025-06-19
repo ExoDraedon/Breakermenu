@@ -8,7 +8,6 @@
       font-family: 'Determination';
       src: url('determination.ttf') format('truetype');
     }
-
     body {
       background-color: black;
       color: white;
@@ -21,7 +20,6 @@
       align-items: center;
       overflow: hidden;
     }
-
     .menu {
       width: 700px;
       display: flex;
@@ -29,11 +27,9 @@
       align-items: center;
       text-align: left;
     }
-
     .menu-content {
       width: 100%;
     }
-
     .menu-item {
       display: flex;
       align-items: center;
@@ -50,37 +46,25 @@
       color: #888;
       cursor: default;
     }
-
-    .menu-item#chapter1 {
+    .menu-item#chapter1,
+    .menu-item#chapter2 {
       cursor: pointer;
       user-select: none;
     }
-
     .menu-item#chapter1:hover,
-    .menu-item#chapter1:active {
+    .menu-item#chapter1:active,
+    .menu-item#chapter2:hover,
+    .menu-item#chapter2:active {
       background-color: rgba(255, 255, 0, 0.1);
     }
-
     .menu-item.selected {
       color: yellow;
     }
-
     .menu-item.selected .chapter-name,
     .menu-item.selected .chapter-desc {
       color: yellow;
       font-weight: bold;
     }
-
-    .menu-item.locked {
-      color: #555;
-      cursor: not-allowed;
-    }
-
-    .menu-item.locked .chapter-name,
-    .menu-item.locked .chapter-desc {
-      color: #555;
-    }
-
     .heart {
       width: 20px;
       height: 20px;
@@ -90,7 +74,6 @@
       transform: translateY(-50%);
       animation: pulse 0.8s infinite;
     }
-
     @keyframes pulse {
       0%, 100% {
         transform: translateY(-50%) scale(1);
@@ -99,29 +82,24 @@
         transform: translateY(-50%) scale(1.2);
       }
     }
-
     .chapter-name {
       flex: 1;
       text-align: left;
       margin-left: 50px;
     }
-
     .chapter-desc {
       flex: 1;
       text-align: left;
     }
-
     .icon {
       width: 32px;
       height: 32px;
       margin-right: 20px;
       background-color: white;
     }
-
     .selected .icon {
       background-color: yellow;
     }
-
     .bottom-bar {
       display: flex;
       justify-content: space-between;
@@ -134,15 +112,12 @@
       animation: appear 0.3s ease-out forwards;
       animation-delay: 0.8s;
     }
-
     .bottom-bar .spade-icons {
       letter-spacing: 10px;
     }
-
     .bottom-bar span {
       margin-left: 10px;
     }
-
     @keyframes appear {
       0% {
         opacity: 0;
@@ -153,7 +128,6 @@
         transform: translateY(0);
       }
     }
-
     @keyframes disappear {
       0% {
         opacity: 1;
@@ -164,7 +138,6 @@
         transform: translateY(20px);
       }
     }
-
     /* Animación de entrada */
     .menu-item:nth-child(1) { animation-delay: 0.1s; }
     .menu-item:nth-child(2) { animation-delay: 0.2s; }
@@ -178,7 +151,6 @@
     .menu-item.hidden {
       animation: disappear 0.3s ease-out forwards;
     }
-
     .menu-item.hidden:nth-child(1) { animation-delay: 0.8s; }
     .menu-item.hidden:nth-child(2) { animation-delay: 0.7s; }
     .menu-item.hidden:nth-child(3) { animation-delay: 0.6s; }
@@ -191,36 +163,34 @@
       animation: disappear 0.3s ease-out forwards;
       animation-delay: 0.1s;
     }
-
     .bottom-bar hr {
       width: 100%;
       border-color: gray;
       margin: 10px 0;
     }
-
   </style>
 </head>
 <body>
   <audio id="backgroundAudio" autoplay loop>
     <source src="menu.mp3" type="audio/mpeg">
   </audio>
-
-  <!-- Audio de Chapter 1 -->
+  <!-- Audios por capítulo -->
   <audio id="chapter1Audio" src="snowgrave.mp3"></audio>
+  <audio id="chapter2Audio" src="snowgrave.mp3"></audio> <!-- Puedes cambiar esto -->
 
   <div class="menu" id="menu">
     <div class="menu-content">
       <!-- CAPÍTULOS DEL MENÚ -->
-      <div class="menu-item selected" id="chapter1" onclick="handleChapter1Click()">
+      <div class="menu-item selected" id="chapter1" onclick="handleChapterClick(1)">
         <span><img src="heart.png" alt="heart" class="heart"></span>
         <span class="chapter-name">Chapter 1</span>
         <span class="chapter-desc">Blazium</span>
         <div class="icon"></div>
       </div>
-      <div class="menu-item locked">
+      <div class="menu-item" id="chapter2" onclick="handleChapterClick(2)">
         <span></span>
         <span class="chapter-name">Chapter 2</span>
-        <span class="chapter-desc">--</span>
+        <span class="chapter-desc">Neo Blazium</span>
         <div class="icon"></div>
       </div>
       <div class="menu-item locked">
@@ -273,53 +243,54 @@
       items.forEach((item, index) => {
         item.classList.remove('selected');
         const heartSpan = item.querySelector('span');
-        if (heartSpan) heartSpan.innerHTML = '';
+        if (heartSpan && index !== 0 && index !== 1) heartSpan.innerHTML = '';
       });
       const currentItem = items[currentIndex];
       currentItem.classList.add('selected');
       const heartContainer = currentItem.querySelector('span');
-      heartContainer.innerHTML = '<img src="heart.png" class="heart">';
-    }
-
-    function handleChapter1Click() {
-      const chapter1 = document.getElementById('chapter1');
-      if (!chapter1.classList.contains('selected')) {
-        items.forEach(item => item.classList.remove('selected'));
-        chapter1.classList.add('selected');
-        chapter1.querySelector('span').innerHTML = '<img src="heart.png" class="heart">';
-        currentIndex = 0;
+      if (heartContainer) {
+        heartContainer.innerHTML = '<img src="heart.png" class="heart">';
       }
-
-      triggerExitAnimationAndRedirect();
     }
 
-    function triggerExitAnimationAndRedirect() {
-      const chapter1 = document.getElementById('chapter1');
+    // Manejador para hacer clic en capítulo
+    function handleChapterClick(chapterNumber) {
+      if (chapterNumber === 1 || chapterNumber === 2) {
+        // Si es cap 1 o 2, se selecciona y ejecuta la animación
+        currentIndex = chapterNumber - 1;
+        updateSelection();
+        triggerExitAnimationAndRedirect(chapterNumber);
+      }
+    }
+
+    function triggerExitAnimationAndRedirect(chapterNumber) {
       const backgroundAudio = document.getElementById('backgroundAudio');
       const chapter1Audio = document.getElementById('chapter1Audio');
+      const chapter2Audio = document.getElementById('chapter2Audio');
 
       // Ocultar elementos
-      chapter1.classList.add('hidden');
+      items.forEach(item => item.classList.add('hidden'));
       bottomBar.classList.add('hidden');
-
-      for (let i = items.length - 1; i >= 0; i--) {
-        if (items[i].id !== 'chapter1') {
-          setTimeout(() => {
-            items[i].classList.add('hidden');
-          }, (items.length - i) * 60);
-        }
-      }
 
       // Detener música de fondo
       backgroundAudio.pause();
 
-      // Reproducir snowgrave.mp3
-      chapter1Audio.currentTime = 0;
-      chapter1Audio.play();
+      // Reproducir audio correspondiente
+      if (chapterNumber === 1) {
+        chapter1Audio.currentTime = 0;
+        chapter1Audio.play();
+      } else if (chapterNumber === 2) {
+        chapter2Audio.currentTime = 0;
+        chapter2Audio.play();
+      }
 
-      // Redirigir 3 segundos después de que termine el audio (8 + 3 = 11 segundos)
+      // Redirigir después de la animación
       setTimeout(() => {
-        window.location.href = 'https://exodraedon.github.io/Blazium/'; 
+        if (chapterNumber === 1) {
+          window.location.href = 'https://exodraedon.github.io/Blazium/'; 
+        } else if (chapterNumber === 2) {
+          window.location.href = 'https://tusitio.com/capitulo2';  // Cambia esta URL según necesites
+        }
       }, 11000); // 8s audio + 3s espera
     }
 
@@ -329,7 +300,6 @@
         do {
           nextIndex = (nextIndex + 1) % items.length;
         } while (items[nextIndex].classList.contains('locked') && nextIndex !== currentIndex);
-
         if (!items[nextIndex].classList.contains('locked')) {
           currentIndex = nextIndex;
           updateSelection();
@@ -340,7 +310,6 @@
         do {
           prevIndex = (prevIndex - 1 + items.length) % items.length;
         } while (items[prevIndex].classList.contains('locked') && prevIndex !== currentIndex);
-
         if (!items[prevIndex].classList.contains('locked')) {
           currentIndex = prevIndex;
           updateSelection();
@@ -349,8 +318,8 @@
       } else if (e.key.toLowerCase() === 'z') {
         const selected = items[currentIndex];
         if (!selected.classList.contains('locked')) {
-          if (selected.id === 'chapter1') {
-            triggerExitAnimationAndRedirect();
+          if (selected.id === 'chapter1' || selected.id === 'chapter2') {
+            triggerExitAnimationAndRedirect(parseInt(selected.id.replace('chapter', '')));
           } else {
             bottomBar.classList.add('hidden');
             for (let i = items.length - 1; i >= 0; i--) {
@@ -368,6 +337,9 @@
     document.getElementById('quit').addEventListener('click', () => {
       alert("No puedes, lol");
     });
+
+    // Inicialización de selección
+    updateSelection();
   </script>
 </body>
 </html>
