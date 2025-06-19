@@ -72,7 +72,13 @@
       left: -30px;
       top: 50%;
       transform: translateY(-50%);
+      transition: transform 0.3s ease, left 0.3s ease;
       animation: pulse 0.8s infinite;
+    }
+
+    .heart.center {
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1.2);
     }
 
     @keyframes pulse {
@@ -274,11 +280,15 @@
         item.classList.remove('selected');
         const heartSpan = item.querySelector('span');
         if (heartSpan) heartSpan.innerHTML = '';
+        const heart = item.querySelector('.heart');
+        if (heart) heart.classList.remove('center'); // Remueve el centro en otros capítulos
       });
       const currentItem = items[currentIndex];
       currentItem.classList.add('selected');
       const heartContainer = currentItem.querySelector('span');
       heartContainer.innerHTML = '<img src="heart.png" class="heart">';
+      const heart = currentItem.querySelector('.heart');
+      heart.classList.add('center'); // Mueve el corazón al centro
     }
 
     document.addEventListener('keydown', (e) => {
