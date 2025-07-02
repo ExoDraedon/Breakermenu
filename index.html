@@ -201,10 +201,10 @@
         <span class="chapter-desc">Tv Time - 03/07</span>
         <div class="icon"></div>
       </div>
-      <div class="menu-item locked">
+      <div class="menu-item selected" id="chapter4" onclick="handleChapterClick(4)">
         <span></span>
         <span class="chapter-name">Chapter 4</span>
-        <span class="chapter-desc">--</span>
+        <span class="chapter-desc">Darkness</span>
         <div class="icon"></div>
       </div>
       <div class="menu-item locked">
@@ -301,12 +301,12 @@
       }
 
       // Redirigir después de la animación
-      setTimeout(() => {
-        if (chapterNumber === 1) {
-          window.location.href = 'https://exodraedon.github.io/Blazium/'; 
-        } else if (chapterNumber === 2) {
-          window.location.href = 'https://exodraedon.github.io/null/';  // Cambia esta URL si tienes una real
-        }
+setTimeout(() => {
+  if (chapterNumber === 1) window.location.href = 'https://exodraedon.github.io/Blazium/';
+  else if (chapterNumber === 2) window.location.href = 'https://exodraedon.github.io/null/';
+  else if (chapterNumber === 4) window.location.href = 'https://exodraedon.github.io/-bWgZ-/';
+}, 11000);
+
       }, 11000); // 8s audio + 3s espera
     }
 
